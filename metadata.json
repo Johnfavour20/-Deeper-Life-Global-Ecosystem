@@ -1,0 +1,8 @@
+{
+  "name": "Deeper Life Church Management System",
+  "description": "A robust, unified digital platform for Deeper Life Church that serves as a secure, versatile, and future-proof ecosystem for communication, administration, worship, and fellowship, integrated with AI and blockchain concepts.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
