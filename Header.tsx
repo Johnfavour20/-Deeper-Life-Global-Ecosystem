@@ -55,7 +55,7 @@ const LanguageSelector: React.FC = () => {
 
     return (
         <div className="relative">
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center">
+            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center">
                 <Globe size={20} />
                 <ChevronDown size={16} className="ml-1" />
             </button>
@@ -87,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({ setIsMenuOpen, toggleDarkMode }) => {
     const [showNotifications, setShowNotifications] = useState(false);
 
     return (
-        <header className="flex-shrink-0 bg-white/30 dark:bg-gray-800/30 backdrop-blur-lg border-b border-white/20 dark:border-gray-700/50 p-4 flex justify-between items-center">
+        <header className="flex-shrink-0 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-100 dark:border-gray-700 p-4 flex justify-between items-center">
             <button className="lg:hidden text-gray-500" onClick={() => setIsMenuOpen(true)}>
                 <Menu />
             </button>
@@ -96,18 +96,18 @@ const Header: React.FC<HeaderProps> = ({ setIsMenuOpen, toggleDarkMode }) => {
                 <input
                     type="text"
                     placeholder="Search messages, hymns, members..."
-                    className="w-full bg-black/5 dark:bg-white/5 border-transparent rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full bg-gray-100 dark:bg-gray-700 border-transparent rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
             </div>
             <div className="flex items-center space-x-2">
                 <LanguageSelector />
-                <button onClick={toggleDarkMode} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                <button onClick={toggleDarkMode} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
                 <div className="relative">
                     <button 
                         onClick={() => setShowNotifications(prev => !prev)}
-                        className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                        className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                         <Bell size={22} />
                         <span className="absolute -top-1 -right-1 h-4 w-4 bg-secondary text-white text-xs rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800">

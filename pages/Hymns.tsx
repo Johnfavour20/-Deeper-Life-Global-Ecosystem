@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Music, FileText, Volume2, Search, X, Star, Plus, Minus, Sparkles } from 'lucide-react';
+import { Music, FileText, Volume2, Search, Star, Plus, Minus, Sparkles } from 'lucide-react';
 import { mockHymns as allHymns } from '../data/hymnsData';
 import { useAudio } from '../context/AudioContext';
 import { AudioTrack, Hymn, HymnRecommendation } from '../types';
@@ -215,10 +215,10 @@ const Hymns: React.FC = () => {
         setIsAiModalOpen(false);
         setSelectedHymn(hymn);
     };
-
+    
     return (
         <div className="space-y-6">
-             {selectedHymn && 
+            {selectedHymn && 
                 <HymnDetailModal 
                     hymn={selectedHymn} 
                     onClose={() => setSelectedHymn(null)} 
@@ -232,84 +232,86 @@ const Hymns: React.FC = () => {
                 onClose={() => setIsAiModalOpen(false)}
                 onSelectHymn={handleSelectRecommendedHymn}
             />
-             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Gospel Hymns & Songs</h1>
-             
-            {hymnOfTheDay && !ghsSearchTerm && (activeCategory === 'All' || activeCategory === hymnOfTheDay.category) && (
-                <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 text-white">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                            <h2 className="text-2xl font-bold mb-2">Hymn of the Day</h2>
-                            <h3 className="text-xl mb-1">GHS {hymnOfTheDay.number} - {hymnOfTheDay.title}</h3>
-                            <p className="text-purple-200">Key: {hymnOfTheDay.key} • Category: {hymnOfTheDay.category}</p>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                            <button onClick={() => handlePlayHymn(hymnOfTheDay)} className="bg-white text-purple-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"><Volume2 size={20} className="inline mr-2" />Play Audio</button>
-                            <button onClick={() => setSelectedHymn(hymnOfTheDay)} className="bg-purple-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-400 transition-colors"><FileText size={20} className="inline mr-2" />Lyrics & Sheet</button>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Gospel Hymns & Songs</h1>
+            
+            <div className="space-y-6">
+                {hymnOfTheDay && !ghsSearchTerm && (activeCategory === 'All' || activeCategory === hymnOfTheDay.category) && (
+                    <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 text-white">
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                            <div>
+                                <h2 className="text-2xl font-bold mb-2">Hymn of the Day</h2>
+                                <h3 className="text-xl mb-1">GHS {hymnOfTheDay.number} - {hymnOfTheDay.title}</h3>
+                                <p className="text-purple-200">Key: {hymnOfTheDay.key} • Category: {hymnOfTheDay.category}</p>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <button onClick={() => handlePlayHymn(hymnOfTheDay)} className="bg-white text-purple-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"><Volume2 size={20} className="inline mr-2" />Play Audio</button>
+                                <button onClick={() => setSelectedHymn(hymnOfTheDay)} className="bg-purple-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-400 transition-colors"><FileText size={20} className="inline mr-2" />Lyrics & Sheet</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-lg">
-                <div className="space-y-4">
-                     <div className="flex flex-col sm:flex-row gap-2">
-                        <div className="relative flex-1">
-                            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input 
-                                type="text" 
-                                placeholder="Search by title, number, or lyrics..." 
-                                value={ghsSearchTerm} 
-                                onChange={(e) => setGhsSearchTerm(e.target.value)} 
-                                className="w-full border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 rounded-full pl-11 pr-4 py-3" 
-                            />
+                )}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-lg">
+                    <div className="space-y-4">
+                        <div className="flex flex-col sm:flex-row gap-2">
+                            <div className="relative flex-1">
+                                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input 
+                                    type="text" 
+                                    placeholder="Search by title, number, or lyrics..." 
+                                    value={ghsSearchTerm} 
+                                    onChange={(e) => setGhsSearchTerm(e.target.value)} 
+                                    className="w-full border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 rounded-full pl-11 pr-4 py-3" 
+                                />
+                            </div>
+                            <Button variant="ghost" onClick={() => setIsAiModalOpen(true)} className="flex-shrink-0">
+                                <Sparkles size={16} className="mr-2"/> AI Recommendations
+                            </Button>
                         </div>
-                        <Button variant="ghost" onClick={() => setIsAiModalOpen(true)} className="flex-shrink-0">
-                            <Sparkles size={16} className="mr-2"/> AI Recommendations
-                        </Button>
+
+                        <div className="flex items-center space-x-2 overflow-x-auto pb-2 -mx-4 md:-mx-6 px-4 md:px-6">
+                            {categories.map(category => (
+                                <button
+                                    key={category}
+                                    onClick={() => setActiveCategory(category)}
+                                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                                        activeCategory === category
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                    }`}
+                                >
+                                    {category === 'Favorites' && <Star size={12} className="inline mr-1.5 mb-0.5" />}
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="flex items-center space-x-2 overflow-x-auto pb-2 -mx-4 md:-mx-6 px-4 md:px-6">
-                        {categories.map(category => (
-                            <button
-                                key={category}
-                                onClick={() => setActiveCategory(category)}
-                                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                                    activeCategory === category
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
-                                }`}
-                            >
-                                {category === 'Favorites' && <Star size={12} className="inline mr-1.5 mb-0.5" />}
-                                {category}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="mt-4 space-y-1">
-                    {filteredHymns.length > 0 ? (
-                        filteredHymns.map((hymn) => (
-                           <button 
-                                key={hymn.id} 
-                                onClick={() => setSelectedHymn(hymn)} 
-                                className="w-full text-left p-3 flex items-center space-x-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
-                            >
-                                <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0 flex items-center justify-center font-bold text-blue-700 dark:text-blue-300">
-                                    {hymn.number}
-                                </div>
-                                <div className="flex-1 overflow-hidden">
-                                    <div className="flex items-center gap-2">
-                                        <p className="font-semibold text-gray-800 dark:text-gray-200 truncate">{hymn.title}</p>
-                                        {favorites.includes(hymn.number) && <Star size={14} className="text-yellow-500 fill-yellow-400 flex-shrink-0" />}
+                    <div className="mt-4 space-y-1">
+                        {filteredHymns.length > 0 ? (
+                            filteredHymns.map((hymn) => (
+                               <button 
+                                    key={hymn.id} 
+                                    onClick={() => setSelectedHymn(hymn)} 
+                                    className="w-full text-left p-3 flex items-center space-x-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                                >
+                                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0 flex items-center justify-center font-bold text-blue-700 dark:text-blue-300">
+                                        {hymn.number}
                                     </div>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{hymn.category}</p>
-                                </div>
-                            </button>
-                        ))
-                    ) : (
-                        <p className="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">
-                            No hymns found matching your search.
-                        </p>
-                    )}
+                                    <div className="flex-1 overflow-hidden">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-semibold text-gray-800 dark:text-gray-200 truncate">{hymn.title}</p>
+                                            {favorites.includes(hymn.number) && <Star size={14} className="text-yellow-500 fill-yellow-400 flex-shrink-0" />}
+                                        </div>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{hymn.category}</p>
+                                    </div>
+                                </button>
+                            ))
+                        ) : (
+                            <p className="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">
+                                No hymns found matching your search.
+                            </p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

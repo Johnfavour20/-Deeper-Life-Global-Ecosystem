@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
@@ -6,7 +6,7 @@ import { useNotification } from '../hooks/useNotification';
 import { useAuth } from '../hooks/useAuth';
 import { mockUsers } from '../data/mockData';
 import { User, UserRole, MinistryDepartment } from '../types';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Search } from 'lucide-react';
 
 const initialFormState: Omit<User, 'id'> = {
     username: '', password: '', role: 'usher', full_name: '', phone_number: '', email: '', gender: 'male', department: 'General'
@@ -18,6 +18,21 @@ const Users: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formState, setFormState] = useState(initialFormState);
     const { showToast } = useNotification();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [roleFilter, setRoleFilter] = useState('all');
+
+    const filteredUsers = useMemo(() => {
+        return users.filter(user => {
+            const matchesSearch = searchTerm.toLowerCase() === '' ||
+                user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.username.toLowerCase().includes(searchTerm.toLowerCase());
+            
+            const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+
+            return matchesSearch && matchesRole;
+        });
+    }, [users, searchTerm, roleFilter]);
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormState(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -51,6 +66,34 @@ const Users: React.FC = () => {
                     <Plus className="w-5 h-5 inline-block mr-1" /> Add User
                 </Button>
             </div>
+
+            <Card className="!p-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by name or username..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                     <select
+                        value={roleFilter}
+                        onChange={(e) => setRoleFilter(e.target.value)}
+                        className="border border-gray-300 dark:border-gray-600 rounded-md bg-transparent focus:ring-2 focus:ring-blue-500 py-2 px-3"
+                    >
+                        <option value="all">All Roles</option>
+                        <option value="member">Member</option>
+                        <option value="usher">Usher</option>
+                        <option value="financial_secretary">Financial Secretary</option>
+                        <option value="group_admin">Group Admin</option>
+                        <option value="regional_admin">Regional Admin</option>
+                    </select>
+                </div>
+            </Card>
+
             <Card className="!p-0">
                 <div className="overflow-x-auto">
                     <table className="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -65,7 +108,7 @@ const Users: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user) => (
+                            {filteredUsers.map((user) => (
                               <tr key={user.id} className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">{user.username}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{user.full_name || '-'}</td>

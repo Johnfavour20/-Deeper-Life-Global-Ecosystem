@@ -1,8 +1,15 @@
+
+import React from 'react';
+
 // From App.tsx and navigation components
 export type ActiveTab =
   | 'dashboard' | 'live' | 'kumuyi_messages' | 'ghs' | 'bible' | 'sts' | 'daily_manna'
-  | 'directory' | 'connect' | 'events' | 'meetings' | 'analytics'
-  | 'blockchain' | 'settings' | 'attendance' | 'financials' | 'users';
+  | 'directory' | 'connect' | 'events' | 'meetings' | 'children' | 'chorister_hub'
+  | 'settings' | 'attendance' | 'financials' | 'users' | 'analytics' | 'blockchain';
+
+// Type for the active view in the Connect component
+export type ConnectView = 'home' | 'explore' | 'notifications' | 'bookmarks' | 'profile' | 'messages' | 'prayer_wall' | 'ask_kumuyi' | 'marketplace' | 'blogs' | 'mentorship';
+
 
 // From AuthContext, mockData, etc.
 export type UserRole =
@@ -22,6 +29,9 @@ export interface User {
   email: string;
   gender: 'male' | 'female';
   department: MinistryDepartment | 'General';
+  profession?: string;
+  location?: string;
+  smallGroup?: string;
 }
 
 export interface UserProfile {
@@ -103,11 +113,22 @@ export interface Sermon {
     series?: string;
 }
 
+export type MessageSeries =
+    | 'GCK Global'
+    | 'Impact Academy'
+    | 'Ministers Conference'
+    | 'Monday Bible Study'
+    | 'Thursday Revival Service'
+    | 'Sunday Worship Service'
+    | 'Special Program'
+    | 'Faith Series'
+    | 'Family Life';
+
 export interface KumuyiMessage {
     id: string;
     type: 'video' | 'audio';
     title: string;
-    series: string;
+    series: MessageSeries;
     speaker: string;
     date: string;
     duration: string;
@@ -126,6 +147,14 @@ export interface Location {
     address: string;
     pastor: string;
 }
+export interface SmallGroup {
+    id: string;
+    name: string;
+    leader: string;
+    location: string;
+    memberCount: number;
+}
+
 
 // From Hymns page and data
 export interface Hymn {
@@ -144,6 +173,13 @@ export interface HymnRecommendation {
     title: string;
     reason: string;
     category: string;
+}
+
+export interface HymnSetlist {
+    id: string;
+    title: string;
+    date: string;
+    hymns: Hymn[];
 }
 
 // From Audio context
@@ -339,4 +375,199 @@ export interface Notification {
     description: string;
     time: string;
     read: boolean;
+}
+
+// From Connect page (new features)
+export interface PrayerRequest {
+    id: string;
+    author: string;
+    avatar: string;
+    request: string;
+    timestamp: string;
+    prayerCount: number;
+    isAnonymous: boolean;
+}
+
+export interface MarketplaceItem {
+    id: string;
+    title: string;
+    price: number;
+    seller: string;
+    imageUrl: string;
+    category: 'Books' | 'Music' | 'Apparel' | 'Art' | 'Professional Service';
+}
+
+export interface BlogPost {
+    id: string;
+    title: string;
+    author: string;
+    authorAvatar: string;
+    timestamp: string;
+    imageUrl: string;
+    snippet: string;
+    readTime: number; // in minutes
+}
+
+export interface MentorshipProfile {
+    userId: string;
+    name: string;
+    avatar: string;
+    role: 'Mentor' | 'Mentee';
+    title: string;
+    expertise: string[];
+    bio: string;
+}
+
+// From STS Page
+export interface Badge {
+    id: string;
+    title: string;
+    description: string;
+    icon: React.ElementType;
+    unlocked: boolean;
+    criteria: string;
+}
+
+// From GCK Page
+export interface GCKEvent {
+  title: string;
+  theme: string;
+  minister: string;
+  date: string;
+  isLive: boolean;
+  streamUrl: string;
+  posterUrl: string;
+}
+
+export interface GCKScheduleItem {
+  day: string;
+  date: string;
+  time: string;
+  topic: string;
+}
+
+export interface GCKTestimony {
+  id: string;
+  author: string;
+  location: string;
+  testimony: string;
+  avatar: string;
+}
+
+// From Children's Page
+export interface BibleStory {
+    id: string;
+    title: string;
+    description: string;
+    imageUrl: string;
+    progress: number; // 0-100
+    color: string;
+}
+
+export interface BibleHero {
+    id: string;
+    name: string;
+    description: string;
+    avatarUrl: string;
+}
+
+export interface BibleQuest {
+    id: string;
+    title: string;
+    description: string;
+    isCompleted: boolean;
+    icon: React.ElementType;
+}
+
+export interface BibleVideo {
+    id: string;
+    title: string;
+    thumbnailUrl: string;
+    duration: string;
+    category: 'Song' | 'Story';
+}
+
+export interface QuizQuestion {
+    id: string;
+    question: string;
+    options: string[];
+    correctAnswer: string;
+}
+
+export interface BibleCharacterProfile {
+    name: string;
+    summary: string;
+    keyFacts: string[];
+    verses: {
+        reference: string;
+        text: string;
+    }[];
+    imageUrl: string; // base64 string with data URI
+}
+
+export interface AvatarConfig {
+    hairStyle: number;
+    hairColor: string;
+    eyeStyle: number;
+    mouthStyle: number;
+    skinColor: string;
+    shirtColor: string;
+}
+
+export interface CodeBlock {
+    id: string;
+    label: string;
+    type: 'move' | 'loop_start' | 'loop_end';
+    direction?: 'up' | 'down' | 'left' | 'right';
+    times?: number;
+    icon: React.ElementType;
+}
+
+export interface GridObject {
+    id: string;
+    type: 'player' | 'target' | 'obstacle';
+    x: number;
+    y: number;
+    icon: React.ElementType | string;
+}
+
+export interface CodingQuest {
+    id: string;
+    title: string;
+    description: string;
+    bibleStory: string;
+    gridSize: number;
+    initialGrid: GridObject[];
+    availableBlocks: CodeBlock[];
+    solution: string[];
+    isCompleted?: boolean;
+    badgeIdToUnlock?: string;
+}
+
+
+export interface YPFEvent {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  type: 'Webinar' | 'Seminar' | 'Networking' | 'Workshop';
+  imageUrl: string;
+}
+
+export interface YPFResource {
+  id: string;
+  title: string;
+  type: 'Article' | 'Video' | 'Podcast';
+  author: string;
+  duration: string;
+  link: string;
+  imageUrl: string;
+}
+
+export interface Quiz {
+    id:string;
+    title: string;
+    questions: QuizQuestion[];
+    badgeIdToUnlock: string;
 }

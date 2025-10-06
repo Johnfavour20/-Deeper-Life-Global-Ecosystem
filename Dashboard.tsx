@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Globe, Wifi, Music, BookOpen, Church, Tv, Languages, Settings, Heart, MessageSquare, Share2, Play, MapPin, Sparkles, Contact, Radio, TrendingUp, DollarSign, UserPlus, FileText } from 'lucide-react';
+import { Users, Globe, Wifi, Music, BookOpen, Church, Tv, Languages, Settings, Heart, MessageSquare, Share2, Play, MapPin, Sparkles, Contact, Radio, TrendingUp, DollarSign, UserPlus } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import MessageCard from '../components/MessageCard';
 import QuickAccessCard from '../components/QuickAccessCard';
@@ -8,7 +8,6 @@ import { useAuth } from '../hooks/useAuth';
 import { privilegeLevels, rolePrivilegeLevels } from '../constants';
 import { ActiveTab, AudioTrack } from '../types';
 import { useAudio } from '../context/AudioContext';
-import Card from '../components/ui/Card';
 
 interface DashboardProps {
   setActiveTab: (tab: ActiveTab) => void;
@@ -32,14 +31,14 @@ const RadioCard: React.FC = () => {
     };
 
     return (
-        <Card>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50 flex items-center">
                     <Radio className="mr-2 text-secondary" /> Deeper Life Radio
                 </h2>
                 {isRadioPlaying && <span className="ml-2 bg-secondary text-white text-xs px-2 py-1 rounded-full animate-pulse">LIVE</span>}
             </div>
-            <div className="bg-black/5 dark:bg-black/20 rounded-lg p-4 flex items-center justify-between">
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 flex items-center justify-between">
                 <div>
                     <p className="font-semibold text-gray-800 dark:text-gray-200">Now Playing</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">GCK with Pastor Kumuyi</p>
@@ -48,84 +47,59 @@ const RadioCard: React.FC = () => {
                     <Play size={16} className="mr-1" /> Listen Live
                 </button>
             </div>
-        </Card>
+        </div>
     );
 };
 
 const PastorOverview: React.FC = () => (
-    <Card>
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Pastor's Overview</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-primary-500/10 dark:bg-primary-500/20 p-4 rounded-lg text-center">
+            <div className="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg text-center">
                 <TrendingUp className="mx-auto text-primary-500 mb-2" />
                 <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">225</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Avg. Attendance</p>
             </div>
-             <div className="bg-green-500/10 dark:bg-green-500/20 p-4 rounded-lg text-center">
+             <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg text-center">
                 <DollarSign className="mx-auto text-green-500 mb-2" />
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">₦55k</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Avg. Offering</p>
             </div>
-             <div className="bg-red-500/10 dark:bg-red-500/20 p-4 rounded-lg text-center">
+             <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg text-center">
                 <UserPlus className="mx-auto text-red-500 mb-2" />
                 <p className="text-2xl font-bold text-red-600 dark:text-red-400">5</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">New Converts</p>
             </div>
-             <div className="bg-purple-500/10 dark:bg-purple-500/20 p-4 rounded-lg text-center">
+             <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg text-center">
                 <Users className="mx-auto text-purple-500 mb-2" />
                 <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">12</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Small Groups</p>
             </div>
         </div>
-    </Card>
+    </div>
 );
-
-const QuickActions: React.FC<{ setActiveTab: (tab: ActiveTab) => void; }> = ({ setActiveTab }) => {
-    const ActionButton: React.FC<{ icon: React.ElementType; label: string; onClick: () => void; }> = ({ icon: Icon, label, onClick }) => (
-        <button onClick={onClick} className="flex flex-col items-center justify-center gap-2 p-4 bg-white/50 dark:bg-white/10 rounded-lg hover:bg-white/80 dark:hover:bg-white/20 transition-colors">
-            <Icon className="w-6 h-6 text-primary-200" />
-            <span className="text-sm font-semibold text-white">{label}</span>
-        </button>
-    );
-    return (
-        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-            <h3 className="font-bold text-white mb-3 px-2">Quick Actions</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <ActionButton icon={Tv} label="Join Live" onClick={() => setActiveTab('live')} />
-                <ActionButton icon={DollarSign} label="Give Offering" onClick={() => setActiveTab('financials')} />
-                <ActionButton icon={Heart} label="Prayer Request" onClick={() => setActiveTab('connect')} />
-                <ActionButton icon={FileText} label="Today's Manna" onClick={() => setActiveTab('daily_manna')} />
-            </div>
-        </div>
-    );
-};
 
 
 const Dashboard: React.FC<DashboardProps> = ({ setActiveTab }) => {
-    const { userRole, userProfile } = useAuth();
-    const currentTime = new Date();
+    const { userRole } = useAuth();
+    const [currentTime] = React.useState(new Date());
+
     const isPastorOrHigher = rolePrivilegeLevels[userRole] >= rolePrivilegeLevels['group_pastor'];
-    
-    const getGreeting = () => {
-        const hour = currentTime.getHours();
-        if (hour < 12) return 'Good Morning';
-        if (hour < 18) return 'Good Afternoon';
-        return 'Good Evening';
-    };
 
     return (
         <div className="space-y-6">
-            <div className="bg-gradient-to-br from-primary-700 via-primary-800 to-black rounded-2xl p-6 text-white space-y-6">
+            <div className="bg-gradient-to-r from-primary-500 via-primary-700 to-primary-900 rounded-2xl p-8 text-white">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold mb-1">{getGreeting()}, {userProfile.name.split(' ')[0]}</h1>
-                        <p className="text-primary-200">Role: {privilegeLevels[userRole]}</p>
+                        <h1 className="text-3xl font-bold mb-2">Welcome to Deeper Life Global Ecosystem</h1>
+                        <p className="text-primary-100 text-lg">Where Heaven Meets Technology</p>
+                        <p className="text-primary-200 text-sm mt-2">Role: {privilegeLevels[userRole]} • {currentTime.toLocaleString()}</p>
                     </div>
                     <div className="text-center hidden md:block">
-                        <div className="bg-white/10 rounded-full p-4"><Globe size={48} /></div>
+                        <div className="bg-white/20 rounded-full p-4"><Globe size={48} /></div>
+                        <p className="text-sm mt-2">Global Unity</p>
                     </div>
                 </div>
-                <QuickActions setActiveTab={setActiveTab} />
             </div>
             
             {isPastorOrHigher && <PastorOverview />}
@@ -141,14 +115,14 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveTab }) => {
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                  <RadioCard />
-                 <Card className="flex items-center justify-between">
+                 <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg flex items-center justify-between">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50">Verse of the Day</h2>
                         <p className="text-gray-600 dark:text-gray-400 mt-1 italic">"Trust in the Lord with all your heart..."</p>
                         <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Proverbs 3:5</p>
                     </div>
-                    <button onClick={() => setActiveTab('bible')} className="bg-black/5 dark:bg-black/20 text-gray-600 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-black/10 dark:hover:bg-black/30 transition-colors">Read More</button>
-                 </Card>
+                    <button onClick={() => setActiveTab('bible')} className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Read More</button>
+                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -158,9 +132,10 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveTab }) => {
                 <QuickAccessCard icon={Contact} title="Church Directory" description="Find churches & members" colorClass="text-green-600" onClick={() => setActiveTab('directory')} />
             </div>
 
-            <Card>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50">Recent Messages</h2>
+                    {/* FIX: Changed 'messages' to 'connect' to match the ActiveTab type and navigate to the correct page. */}
                     <button onClick={() => setActiveTab('kumuyi_messages')} className="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-medium">View All →</button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -168,7 +143,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveTab }) => {
                     <MessageCard title="The Expected Christ" speaker="Pastor W.F. Kumuyi" date="Nov 15, 2023" duration="48 min" category="GCK India" />
                     <MessageCard title="Gracious Emmanuel for Soaring Heavenward Eagles" speaker="Pastor W.F. Kumuyi" date="Dec 26, 2023" duration="45 min" category="Impact Academy" />
                 </div>
-            </Card>
+            </div>
         </div>
     );
 };

@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useNotification } from '../hooks/useNotification';
 import { rolePrivilegeLevels } from '../constants';
 import type { UserProfile } from '../types';
+import { mockGCKEventInfo } from '../data/mockData';
 
 const mockLiveChat = [
     { user: 'Grace A.', message: 'Hallelujah! What a powerful word!' },
@@ -155,6 +156,7 @@ const StudioView: React.FC<{ onExit: () => void }> = ({ onExit }) => {
 const Live: React.FC = () => {
     const { user, userProfile } = useAuth();
     const [isStudioMode, setStudioMode] = useState(false);
+    const gckEvent = mockGCKEventInfo;
     
     // Only the General Superintendent can broadcast in this mock setup
     const canBroadcast = user && rolePrivilegeLevels[user.role] >= rolePrivilegeLevels['g_s'];
@@ -181,27 +183,30 @@ const Live: React.FC = () => {
             
             <div className="flex-1 flex flex-col bg-black">
                 <div className="flex-1 flex items-center justify-center relative bg-gray-900">
-                    <img src="https://i.ytimg.com/vi/3tmd-ClpJxA/hq720.jpg" className="w-full h-full object-cover opacity-50" alt="Live Stream background" />
+                    <img src={gckEvent.posterUrl} className="w-full h-full object-cover opacity-50" alt="Live Stream background" />
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <div className="text-center text-white">
-                            <h2 className="text-4xl font-bold">LIVE STREAM IS OFFLINE</h2>
-                            <p className="mt-2 text-lg">The next GCK broadcast will begin shortly.</p>
+                         {/* This part can be dynamic. If stream is offline, show message. If online, show video player. */}
+                        <div className="text-center text-white p-4">
+                            <h2 className="text-4xl font-bold drop-shadow-lg">{gckEvent.isLive ? "You are watching the Global Crusade" : "LIVE STREAM IS OFFLINE"}</h2>
+                            <p className="mt-2 text-lg drop-shadow-md">{gckEvent.isLive ? gckEvent.theme : "The next broadcast will begin shortly."}</p>
                         </div>
                     </div>
                     
                     <div className="absolute top-4 left-4 flex items-center gap-4">
-                        <span className="bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-md flex items-center gap-2">
-                            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                            LIVE
-                        </span>
+                         {gckEvent.isLive && (
+                            <span className="bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-md flex items-center gap-2 animate-pulse">
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                LIVE
+                            </span>
+                        )}
                         <span className="bg-black/50 text-white text-sm font-bold px-3 py-1 rounded-md flex items-center gap-2">
                             <Users size={16} /> 2.4M
                         </span>
                     </div>
                 </div>
                 <div className="p-4 bg-gray-800 text-white">
-                    <h1 className="text-2xl font-bold">GCK Global Crusade with Pastor W.F. Kumuyi</h1>
-                    <p className="text-gray-300">Live from Lagos, Nigeria</p>
+                    <h1 className="text-2xl font-bold">{gckEvent.title} - {gckEvent.theme}</h1>
+                    <p className="text-gray-300">with {gckEvent.minister}</p>
                     <div className="mt-4 flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                             <button className="flex items-center space-x-2 text-gray-300 hover:text-white">

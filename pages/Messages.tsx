@@ -1,261 +1,187 @@
-import React, { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { Camera, Search, MoreVertical, Users, MessageSquare as MessageSquareIcon, Star, Phone, Plus, Pencil, Video, Bell, ArrowUpRight, ArrowDownLeft, Link as LinkIcon, Volume2 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Camera, Search, MoreVertical, Users, MessageSquare as MessageSquareIcon, Phone, Plus, Pencil, Video, ArrowUpRight, ArrowDownLeft, Link as LinkIcon, Volume2, Mic, Paperclip, Smile, ChevronLeft, Send } from 'lucide-react';
 import { chatContacts, chatGroups, chatMessages, mockStories, mockCommunities, mockChannels, mockCalls } from '../data/chatData';
 import ChatListItem from '../components/ChatListItem';
 import ChatBubble from '../components/ChatBubble';
 import { ChatMessage, Story, CommunityInfo, Channel, CallLog } from '../types';
-import Logo from '../components/Logo';
 
-// --- TAB COMPONENTS ---
+type AnyItem = (typeof chatContacts[0]) | (typeof chatGroups[0]) | CommunityInfo | Story | Channel | CallLog;
 
-const CommunitiesTab: React.FC = () => (
-    <div className="flex-1 overflow-y-auto">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-            <button className="w-full flex items-center space-x-4 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                <div className="bg-gray-200 dark:bg-gray-600 rounded-lg w-12 h-12 flex items-center justify-center">
-                    <Users className="text-gray-600 dark:text-gray-300" />
-                </div>
-                <span className="font-bold text-gray-900 dark:text-gray-50">New community</span>
-            </button>
-        </div>
-        <div className="p-4 space-y-2">
-            {mockCommunities.map(community => (
-                <div key={community.id} className="flex items-center space-x-4 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer">
-                    <img src={community.avatar} alt={community.name} className="w-12 h-12 rounded-lg object-cover" />
-                    <div className="flex-1">
-                        <p className="font-bold text-gray-900 dark:text-gray-50">{community.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{community.description}</p>
-                    </div>
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
-const ChatsTab: React.FC = () => {
-    const allConversations = [...chatContacts, ...chatGroups];
-    const [activeChat, setActiveChat] = useState(allConversations[0]);
-    
-    // In a real app, you'd manage messages state here. For this clone, we'll just read from mock data.
-    const messages = (chatMessages as any)[activeChat.id] || [];
-
-    return (
-        <div className="flex-1 overflow-y-auto">
-            {allConversations.map(contact => (
-                <ChatListItem 
-                    key={contact.id} 
-                    contact={contact}
-                    isActive={activeChat.id === contact.id}
-                    onClick={() => setActiveChat(contact)} 
-                />
-            ))}
-        </div>
-    );
-};
-
-const UpdatesTab: React.FC = () => {
-    // Status Reel Component (adapted from Community.tsx)
-    const StatusReel: React.FC<{ stories: Story[] }> = ({ stories }) => (
-        <div className="p-4">
-            <div className="flex justify-between items-center mb-2">
-                <h2 className="font-bold text-lg text-gray-900 dark:text-gray-50">Status</h2>
-                <button><MoreVertical size={20} className="text-gray-500 dark:text-gray-400" /></button>
-            </div>
-            <div className="flex space-x-4">
-                <div className="flex-shrink-0 text-center w-16">
-                    <div className="relative">
-                        <img src="https://avatar.iran.liara.run/public/boy?username=johndoe" alt="My Status" className="w-14 h-14 rounded-full object-cover" />
-                        <div className="absolute bottom-0 right-0 bg-whatsapp-accent text-white rounded-full w-5 h-5 flex items-center justify-center border-2 border-white dark:border-gray-800">
-                            <Plus size={14} />
-                        </div>
-                    </div>
-                    <p className="text-xs mt-1 truncate text-gray-600 dark:text-gray-400">My status</p>
-                </div>
-                {stories.map(story => (
-                    <div key={story.id} className="flex-shrink-0 text-center w-16">
-                        <div className={`w-14 h-14 rounded-full p-0.5 border-2 ${story.viewed ? 'border-gray-300 dark:border-gray-600' : 'border-green-500'}`}>
-                            <img src={story.avatar} alt={story.author} className="w-full h-full rounded-full object-cover" />
-                        </div>
-                        <p className="text-xs mt-1 truncate text-gray-700 dark:text-gray-300">{story.author}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-
-    // Channel List Item Component
-    const ChannelListItem: React.FC<{ channel: Channel }> = ({ channel }) => (
-         <div className="flex items-center space-x-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer">
-            <img src={channel.avatar} alt={channel.name} className="w-12 h-12 rounded-full object-cover" />
-            <div className="flex-1 border-b border-gray-200 dark:border-gray-700 pb-3">
-                <div className="flex justify-between items-center">
-                    <p className="font-bold text-gray-900 dark:text-gray-50">{channel.name}</p>
-                    {channel.muted && <Volume2 size={16} className="text-gray-400" />}
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{channel.lastUpdate}</p>
-            </div>
-        </div>
-    );
-    
-    return (
-        <div className="flex-1 overflow-y-auto">
-            <StatusReel stories={mockStories} />
-            <div className="border-t border-gray-200 dark:border-gray-700 p-4">
-                 <div className="flex justify-between items-center mb-2">
-                    <h2 className="font-bold text-lg text-gray-900 dark:text-gray-50">Channels</h2>
-                    <button><Plus size={20} className="text-gray-500 dark:text-gray-400" /></button>
-                </div>
-                {mockChannels.map(channel => <ChannelListItem key={channel.id} channel={channel} />)}
-            </div>
-        </div>
-    );
-};
-
-const CallsTab: React.FC = () => {
-    const CallLogItem: React.FC<{ call: CallLog }> = ({ call }) => {
-        const isMissed = call.direction === 'missed';
-        const isOutgoing = call.direction === 'outgoing';
-        
-        const DirIcon = isOutgoing ? ArrowUpRight : ArrowDownLeft;
-        
-        return (
-            <div className="flex items-center space-x-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer">
-                <img src={call.avatar} alt={call.contactName} className="w-12 h-12 rounded-full object-cover" />
-                <div className="flex-1">
-                    <p className={`font-bold ${isMissed ? 'text-red-500' : 'text-gray-900 dark:text-gray-50'}`}>{call.contactName}</p>
-                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                       <DirIcon size={16} className={`mr-1 ${isMissed ? 'text-red-500' : 'text-gray-500'}`} />
-                       {call.time}
-                    </div>
-                </div>
-                <button className="p-2 text-whatsapp-header dark:text-whatsapp-accent">
-                    {call.type === 'video' ? <Video size={22} /> : <Phone size={22} />}
-                </button>
-            </div>
-        );
-    };
-    
-    return (
-        <div className="flex-1 overflow-y-auto">
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                <button className="w-full flex items-center space-x-4 p-2">
-                    <div className="bg-whatsapp-accent rounded-full w-12 h-12 flex items-center justify-center">
-                        <LinkIcon className="text-white" />
-                    </div>
-                    <div>
-                        <p className="font-bold text-gray-900 dark:text-gray-50 text-left">Create call link</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 text-left">Share a link for your Deeper Life call</p>
-                    </div>
-                </button>
-            </div>
-            <div className="p-4">
-                <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Recent</h3>
-                {mockCalls.map(call => <CallLogItem key={call.id} call={call} />)}
-            </div>
-        </div>
-    );
-};
-
-
-// --- FLOATING ACTION BUTTON ---
-
-// FIX: Changed prop type for `tab` to `ActiveTab` to match the state type, resolving the type mismatch error.
-const FloatingActionButton: React.FC<{ tab: ActiveTab }> = ({ tab }) => {
-    if (tab === 'chats') {
-        return (
-            <button className="absolute bottom-6 right-6 bg-whatsapp-accent text-white p-4 rounded-2xl shadow-lg hover:bg-green-600 transition-all">
-                <MessageSquareIcon size={24} />
-            </button>
-        );
-    }
-    if (tab === 'updates') {
-         return (
-            <div className="absolute bottom-6 right-6 flex flex-col items-center gap-4">
-                <button className="bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 p-3 rounded-xl shadow-lg hover:bg-gray-200 transition-all">
-                    <Pencil size={20} />
-                </button>
-                <button className="bg-whatsapp-accent text-white p-4 rounded-2xl shadow-lg hover:bg-green-600 transition-all">
-                    <Camera size={24} />
-                </button>
-            </div>
-        );
-    }
-     if (tab === 'calls') {
-        return (
-            <button className="absolute bottom-6 right-6 bg-whatsapp-accent text-white p-4 rounded-2xl shadow-lg hover:bg-green-600 transition-all">
-                <Phone size={24} className="fill-current text-white" />
-            </button>
-        );
-    }
-    return null;
-};
-
-
-// --- MAIN MESSAGES COMPONENT ---
-
+// --- HEADER AND TABS ---
 type ActiveTab = 'communities' | 'chats' | 'updates' | 'calls';
 
-const Messages: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<ActiveTab>('chats');
-    
-    const TabButton: React.FC<{tabName: ActiveTab, label: string, count?: number}> = ({ tabName, label, count }) => {
+const Header: React.FC<{ activeTab: ActiveTab, setActiveTab: (tab: ActiveTab) => void, unreadCount: number }> = ({ activeTab, setActiveTab, unreadCount }) => {
+    const TabButton: React.FC<{ tabName: ActiveTab, label: string, count?: number }> = ({ tabName, label, count }) => {
         const isActive = activeTab === tabName;
         return (
             <button
                 onClick={() => setActiveTab(tabName)}
-                className={`flex-1 py-3 text-sm font-bold uppercase transition-all duration-300 text-center ${
-                    isActive
-                        ? 'text-whatsapp-accent border-b-4 border-whatsapp-accent'
-                        : 'text-gray-200/70 hover:text-white'
-                }`}
+                className={`flex-1 py-3 text-sm font-bold uppercase transition-all duration-300 text-center ${isActive ? 'text-whatsapp-accent border-b-4 border-whatsapp-accent' : 'text-gray-500 dark:text-gray-200/70 hover:text-white'}`}
             >
                 <div className="flex items-center justify-center gap-2">
                     {label}
-                    {count && count > 0 && <span className="bg-white/30 text-white text-xs rounded-full px-1.5 py-0.5">{count}</span>}
+                    {count && count > 0 && <span className={`text-xs rounded-full px-1.5 py-0.5 ${isActive ? 'bg-whatsapp-accent text-white' : 'bg-gray-500 dark:bg-white/30 text-white'}`}>{count}</span>}
                 </div>
             </button>
         );
     };
 
-    const renderContent = () => {
-        switch(activeTab) {
-            case 'communities': return <CommunitiesTab />;
-            case 'chats': return <ChatsTab />;
-            case 'updates': return <UpdatesTab />;
-            case 'calls': return <CallsTab />;
-            default: return <ChatsTab />;
+    return (
+        <header className="bg-white dark:bg-whatsapp-header-dark text-gray-800 dark:text-white flex-shrink-0">
+            <div className="flex justify-between items-center px-3 h-16">
+                <h1 className="text-xl font-bold">Messages</h1>
+                <div className="flex items-center space-x-4">
+                    <button className="text-gray-600 dark:text-gray-200/70"><Camera size={20} /></button>
+                    <button className="text-gray-600 dark:text-gray-200/70"><Search size={20} /></button>
+                    <button className="text-gray-600 dark:text-gray-200/70"><MoreVertical size={20} /></button>
+                </div>
+            </div>
+            <div className="flex items-center border-b border-gray-200 dark:border-gray-700">
+                <TabButton tabName="communities" label="Communities" />
+                <TabButton tabName="chats" label="Chats" count={unreadCount} />
+                <TabButton tabName="updates" label="Updates" />
+                <TabButton tabName="calls" label="Calls" />
+            </div>
+        </header>
+    );
+};
+
+// --- LIST PANELS FOR EACH TAB ---
+
+const TabListPanel: React.FC<{ activeTab: ActiveTab, onSelectItem: (item: AnyItem) => void, activeItem: AnyItem | null }> = ({ activeTab, onSelectItem, activeItem }) => {
+    const renderList = () => {
+        switch (activeTab) {
+            case 'communities':
+                return mockCommunities.map(item => (
+                    <ChatListItem key={item.id} contact={{...item, lastMessage: item.description, unread: 0, time: '', online: false}} isActive={activeItem?.id === item.id} onClick={() => onSelectItem(item)} />
+                ));
+            case 'chats':
+                const allConversations = [...chatContacts, ...chatGroups];
+                return allConversations.map(item => (
+                     <ChatListItem key={item.id} contact={item} isActive={activeItem?.id === item.id} onClick={() => onSelectItem(item)} />
+                ));
+            case 'updates':
+                // Simplified view for updates
+                return mockStories.map(item => (
+                     <ChatListItem key={item.id} contact={{...item, name: item.author, lastMessage: 'Status update', unread: 0, time: 'Today', online: false}} isActive={activeItem?.id === item.id} onClick={() => onSelectItem(item)} />
+                ));
+            case 'calls':
+                 return mockCalls.map(item => (
+                     <ChatListItem key={item.id} contact={{...item, name: item.contactName, lastMessage: `${item.direction} ${item.type} call`, unread: 0, time: item.time, online: false}} isActive={activeItem?.id === item.id} onClick={() => onSelectItem(item)} />
+                ));
+            default:
+                return null;
         }
     };
-    
-    // Calculate total unread chats
-    const unreadChats = [...chatContacts, ...chatGroups].reduce((acc, chat) => acc + (chat.unread || 0), 0);
+    return <div className="flex-1 overflow-y-auto">{renderList()}</div>
+};
 
+// --- RIGHT-SIDE PANELS ---
+
+const ConversationPanel: React.FC<{ chat: any, onBack: () => void }> = ({ chat, onBack }) => {
+    const messages = (chatMessages as any)[chat.id] || [];
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+    
     return (
-        <div className="h-full w-full flex flex-col bg-white dark:bg-whatsapp-list-bg-dark text-gray-900 dark:text-gray-50 overflow-hidden">
-            {/* Custom Header */}
-            <header className="bg-whatsapp-header dark:bg-whatsapp-header-dark text-white flex-shrink-0">
-                <div className="flex justify-between items-center px-3 h-16">
-                    <Logo variant="sidebar" className="text-white" />
-                    <div className="flex items-center space-x-4">
-                        <button><Camera size={20} /></button>
-                        <button><Search size={20} /></button>
-                        <button><MoreVertical size={20} /></button>
+        <>
+            <div className="p-2.5 bg-white dark:bg-whatsapp-header-dark text-gray-800 dark:text-white flex items-center justify-between flex-shrink-0 border-b border-gray-200 dark:border-transparent">
+                <div className="flex items-center space-x-3">
+                    <button onClick={onBack} className="md:hidden p-2 rounded-full hover:bg-black/10 text-gray-600 dark:text-white"><ChevronLeft /></button>
+                    <img src={chat.avatar} alt={chat.name} className="w-10 h-10 rounded-full" />
+                    <div>
+                        <h2 className="font-bold">{chat.name}</h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-200">{chat.status || 'online'}</p>
                     </div>
                 </div>
-                <div className="flex items-center">
-                    <TabButton tabName="communities" label="Communities" />
-                    <TabButton tabName="chats" label="Chats" count={unreadChats} />
-                    <TabButton tabName="updates" label="Updates" />
-                    <TabButton tabName="calls" label="Calls" />
+                <div className="flex items-center space-x-2">
+                    <button className="p-2 rounded-full text-gray-600 dark:text-white hover:bg-black/10"><Video size={20} /></button>
+                    <button className="p-2 rounded-full text-gray-600 dark:text-white hover:bg-black/10"><Phone size={20} /></button>
+                    <button className="p-2 rounded-full text-gray-600 dark:text-white hover:bg-black/10"><MoreVertical size={20} /></button>
                 </div>
-            </header>
-            
-            {/* Main Content */}
-            <main className="flex-1 relative overflow-hidden">
-                {renderContent()}
-                <FloatingActionButton tab={activeTab} />
-            </main>
+            </div>
+
+            <div className="flex-1 p-4 overflow-y-auto space-y-3">
+                {messages.map((msg: ChatMessage) => (
+                    <ChatBubble key={msg.id} message={msg} onReplyClick={() => {}} />
+                ))}
+                <div ref={messagesEndRef} />
+            </div>
+
+            <div className="p-2 bg-gray-100 dark:bg-whatsapp-chat-bg-dark flex items-center gap-2">
+               <div className="flex-1 flex items-center bg-white dark:bg-whatsapp-received-dark rounded-full px-2">
+                   <button className="p-2 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded-full"><Smile size={22} /></button>
+                    <input type="text" placeholder="Type a message" className="flex-1 bg-transparent px-2 py-2 text-sm focus:outline-none" />
+                    <button className="p-2 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded-full"><Paperclip size={22} /></button>
+               </div>
+                <button className="bg-whatsapp-accent text-white rounded-full p-3 hover:bg-green-600 transition-colors">
+                    <Send size={20} />
+                </button>
+            </div>
+        </>
+    );
+};
+
+const GenericDetailPanel: React.FC<{ item: AnyItem, onBack: () => void }> = ({ item, onBack }) => (
+    <div className="flex flex-col h-full">
+         <div className="p-2.5 bg-white dark:bg-whatsapp-header-dark text-gray-800 dark:text-white flex items-center space-x-3 flex-shrink-0 border-b border-gray-200 dark:border-transparent">
+            <button onClick={onBack} className="md:hidden p-2 rounded-full hover:bg-black/10 text-gray-600 dark:text-white"><ChevronLeft /></button>
+            <h2 className="font-bold">Details</h2>
+        </div>
+        <div className="flex-1 flex items-center justify-center text-center p-8">
+            <div>
+                 <img src={(item as any).avatar} alt={(item as any).name} className="w-24 h-24 rounded-full mx-auto mb-4" />
+                <h3 className="text-xl font-bold">{(item as any).name || (item as any).contactName}</h3>
+                <p className="text-gray-500 mt-2">Full functionality for this section is coming soon!</p>
+            </div>
+        </div>
+    </div>
+);
+
+const PlaceholderPanel = () => (
+     <div className="flex-1 flex items-center justify-center text-center text-gray-500 dark:text-gray-400">
+        <div>
+            <MessageSquareIcon size={48} className="mx-auto mb-4 opacity-50" />
+            <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300">Deeper Life Messenger</h2>
+            <p className="font-medium mt-1">Select a conversation to start messaging.</p>
+        </div>
+    </div>
+);
+
+
+// --- MAIN MESSAGES COMPONENT ---
+
+const Messages: React.FC = () => {
+    const [activeTab, setActiveTab] = useState<ActiveTab>('chats');
+    const [activeItem, setActiveItem] = useState<AnyItem | null>(chatContacts[0]);
+
+    const unreadChats = [...chatContacts, ...chatGroups].reduce((acc, chat) => acc + (chat.unread || 0), 0);
+    
+    const isChat = (item: AnyItem | null): item is (typeof chatContacts[0] | typeof chatGroups[0]) => {
+        return item ? 'lastMessage' in item : false;
+    };
+
+    return (
+        <div className="flex h-full w-full bg-white dark:bg-whatsapp-list-bg-dark text-gray-900 dark:text-gray-50 overflow-hidden">
+            {/* Left Pane: List of chats */}
+            <div className={`w-full md:w-1/3 xl:w-1/4 border-r border-gray-200 dark:border-gray-700 flex flex-col ${activeItem ? 'hidden md:flex' : 'flex'}`}>
+                <Header activeTab={activeTab} setActiveTab={setActiveTab} unreadCount={unreadChats} />
+                <TabListPanel activeTab={activeTab} onSelectItem={setActiveItem} activeItem={activeItem} />
+            </div>
+
+            {/* Right Pane: Conversation */}
+            <div className={`w-full md:w-2/3 xl:w-3/4 flex-col bg-whatsapp-chat-bg dark:bg-whatsapp-chat-bg-dark bg-whatsapp-pattern ${activeItem ? 'flex' : 'hidden md:flex'}`}>
+                {isChat(activeItem) ? (
+                    <ConversationPanel chat={activeItem} onBack={() => setActiveItem(null)} />
+                ) : activeItem ? (
+                     <GenericDetailPanel item={activeItem} onBack={() => setActiveItem(null)} />
+                ) : (
+                    <PlaceholderPanel />
+                )}
+            </div>
         </div>
     );
 };

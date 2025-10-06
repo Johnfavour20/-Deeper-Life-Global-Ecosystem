@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMxZTNhOGEiLz48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxMiIgZmlsbD0iI2I5MWMxYyIvPjxwYXRoIGQ9Ik0xNiA4djE2bTgtOEg4IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDRGNjgiLz48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxMiIgZmlsbD0iI0Q0MzMzNCIvPjxwYXRoIGQ9Ik0xNiA4djE2bTgtOEg4IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Deeper Life Church Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,30 +13,30 @@
           extend: {
             colors: {
               'primary': {
-                '50': '#eff6ff',
-                '100': '#dbeafe',
-                '200': '#bfdbfe',
-                '300': '#93c5fd',
-                '400': '#60a5fa',
-                '500': '#3b82f6',
-                '600': '#2563eb',
-                '700': '#1d4ed8',
-                '800': '#1e40af',
-                '900': '#1e3a8a',
-                '950': '#172554',
+                '50': '#f0f8ff',
+                '100': '#e0f0ff',
+                '200': '#c2e0ff',
+                '300': '#a3d0ff',
+                '400': '#6ab5ff',
+                '500': '#4680C2',
+                '600': '#3b72b2',
+                '700': '#34639e',
+                '800': '#214e7a',
+                '900': '#004F68',
+                '950': '#003b50'
               },
-              'secondary': '#b91c1c', // red-700
+              'secondary': '#D43334', // Red
               'whatsapp': {
-                'header': '#128C7E',
+                'header': '#34639e',
                 'header-dark': '#202c33',
                 'chat-bg': '#E5DDD5',
                 'chat-bg-dark': '#0b141a',
                 'list-bg-dark': '#111b21',
                 'active-chat-dark': '#2a3942',
                 'sent': '#DCF8C6',
-                'sent-dark': '#005c4b',
+                'sent-dark': '#214e7a',
                 'received-dark': '#202c33',
-                'accent': '#25D366',
+                'accent': '#4680C2',
                 'secondary-text': '#667781',
               }
             },
@@ -59,6 +59,15 @@
   }
 }
 </script>
+<style>
+  body {
+    background-image: linear-gradient(135deg, #f0f8ff 0%, #c2e0ff 100%);
+    transition: background-image 0.3s ease-in-out;
+  }
+  html.dark body {
+    background-image: linear-gradient(135deg, #003b50 0%, #214e7a 100%);
+  }
+</style>
 </head>
   <body>
     <div id="root"></div>

@@ -1,6 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { GenerateContentResponse } from "@google/genai";
-import { Hymn, HymnRecommendation } from "../types";
+import { Hymn, HymnRecommendation, BibleCharacterProfile } from "../types";
 
 const API_KEY = process.env.API_KEY;
 
@@ -131,6 +131,110 @@ export const generateProfilePicture = async (prompt: string): Promise<string> =>
     }
 };
 
+export const generateColoringPage = async (prompt: string): Promise<string> => {
+    if (!API_KEY) throw new Error("AI features are disabled. Please configure the API key.");
+    const fullPrompt = `Generate a simple, clean, black and white line art coloring book page for a child. The style should be bold outlines, cartoonish, and friendly, with no shading or color. The subject is a Bible story: ${prompt}`;
+    try {
+        const response = await ai.models.generateImages({
+            model: 'imagen-4.0-generate-001',
+            prompt: fullPrompt,
+            config: {
+                numberOfImages: 1,
+                outputMimeType: 'image/png',
+                aspectRatio: '1:1',
+            },
+        });
+
+        if (response.generatedImages && response.generatedImages.length > 0) {
+            return response.generatedImages[0].image.imageBytes;
+        } else {
+            throw new Error("No image was generated.");
+        }
+    } catch (error) {
+        console.error("Error generating coloring page:", error);
+        throw new Error("Could not generate coloring page.");
+    }
+};
+
+export const getBibleCharacterInfo = async (characterName: string): Promise<BibleCharacterProfile> => {
+    if (!API_KEY) throw new Error("AI features are disabled. Please configure the API key.");
+
+    const imagePromise = ai.models.generateImages({
+        model: 'imagen-4.0-generate-001',
+        prompt: `A cute, colorful, friendly cartoon illustration of the Bible character ${characterName}. The style should be simple and appealing to young children. Bright colors, full body, no text.`,
+        config: {
+            numberOfImages: 1,
+            outputMimeType: 'image/png',
+            aspectRatio: '1:1',
+        },
+    });
+
+    const textPrompt = `You are a friendly storyteller for children under 10. Tell me about the Bible character: "${characterName}".
+    Provide a simple summary of who they are in one paragraph.
+    Provide a list of 2-3 fun facts or key things they did.
+    Provide 2-3 important Bible verses about their story with the reference.
+    Make everything very easy for a child to understand.
+    Respond ONLY with a valid JSON object matching the specified schema.`;
+
+    const textPromise = ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: textPrompt,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+                type: Type.OBJECT,
+                properties: {
+                    summary: {
+                        type: Type.STRING,
+                        description: "A simple, one-paragraph, child-friendly summary of the character."
+                    },
+                    keyFacts: {
+                        type: Type.ARRAY,
+                        items: { type: Type.STRING },
+                        description: "A list of 2-3 fun facts or key things the character did, written for a child."
+                    },
+                    verses: {
+                        type: Type.ARRAY,
+                        items: {
+                            type: Type.OBJECT,
+                            properties: {
+                                reference: { type: Type.STRING, description: "The Bible reference, e.g., '1 Samuel 17:49'." },
+                                text: { type: Type.STRING, description: "The text of the Bible verse." },
+                            },
+                            required: ["reference", "text"],
+                        },
+                        description: "A list of 2-3 important Bible verses about the character's story."
+                    },
+                },
+                required: ["summary", "keyFacts", "verses"],
+            },
+        }
+    });
+
+    try {
+        const [imageResponse, textResponse] = await Promise.all([imagePromise, textPromise]);
+        
+        if (!imageResponse.generatedImages || imageResponse.generatedImages.length === 0) {
+            throw new Error("AI failed to generate an image.");
+        }
+        const imageUrl = imageResponse.generatedImages[0].image.imageBytes;
+        
+        const textData = JSON.parse(textResponse.text.trim());
+
+        return {
+            name: characterName,
+            imageUrl: `data:image/png;base64,${imageUrl}`,
+            summary: textData.summary,
+            keyFacts: textData.keyFacts,
+            verses: textData.verses,
+        };
+    } catch (error) {
+        console.error("Error getting Bible character info:", error);
+        throw new Error("Could not find information for that character. Please try another name.");
+    }
+};
+
+
 export const generateDailyMannaPrayer = async (devotionalText: string): Promise<string> => {
     if (!API_KEY) return "AI prayer generation is disabled. Please configure the API key.";
     try {
@@ -199,5 +303,41 @@ export const askKumuyi = async (question: string, history: KumuyiChatTurn[]): Pr
     } catch (error) {
         console.error("Error with Ask Kumuyi AI:", error);
         return "I am sorry, I am unable to provide a response at this moment. Please try again later.";
+    }
+};
+
+export const generateSermonOutline = async (topic: string): Promise<string> => {
+    if (!API_KEY) return "AI features are disabled.";
+    const prompt = `Generate a three-point sermon outline on the topic "${topic}", in the style of Pastor W.F. Kumuyi. Each point should be alliterated if possible and supported by at least two scripture references. The structure should be clear, logical, and deeply biblical. Format with clear headings for each point.`;
+    try {
+        const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
+        return response.text;
+    } catch (error) {
+        console.error("Error generating sermon outline:", error);
+        return "Could not generate an outline at this time.";
+    }
+};
+
+export const findIllustrations = async (topic: string): Promise<string> => {
+    if (!API_KEY) return "AI features are disabled.";
+    const prompt = `Provide two short, impactful sermon illustrations for the topic "${topic}". One should be a biblical example (not one of the main teaching texts), and the other a relatable modern-day story or analogy. Each illustration should be a concise paragraph.`;
+    try {
+        const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
+        return response.text;
+    } catch (error) {
+        console.error("Error finding illustrations:", error);
+        return "Could not find illustrations at this time.";
+    }
+};
+
+export const suggestScriptures = async (topic: string): Promise<string> => {
+    if (!API_KEY) return "AI features are disabled.";
+    const prompt = `List 5-7 key scripture cross-references for a sermon on "${topic}". For each reference, provide the verse and a brief one-sentence explanation of its relevance to the topic.`;
+    try {
+        const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
+        return response.text;
+    } catch (error) {
+        console.error("Error suggesting scriptures:", error);
+        return "Could not suggest scriptures at this time.";
     }
 };

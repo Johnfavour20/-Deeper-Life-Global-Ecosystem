@@ -1,4 +1,3 @@
-
 # Deeper Life Church Management System
 
 A robust, unified digital platform for the Deeper Life Bible Church that serves as a secure, versatile, and future-proof ecosystem for communication, administration, worship, and fellowship, integrated with cutting-edge AI and blockchain concepts.

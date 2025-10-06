@@ -74,7 +74,7 @@ const PostCard: React.FC<{ post: CommunityPost, isContinuationOfThread?: boolean
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-md relative">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-md border border-white/20 dark:border-gray-700/50 rounded-xl p-5 shadow-lg relative transition-transform duration-200 hover:-translate-y-1">
             {isContinuationOfThread && <div className="absolute top-0 left-11 -translate-x-1/2 w-0.5 h-5 bg-gray-200 dark:bg-gray-600"></div>}
             <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
@@ -84,7 +84,7 @@ const PostCard: React.FC<{ post: CommunityPost, isContinuationOfThread?: boolean
                         <p className="text-sm text-gray-500 dark:text-gray-400">{post.time}</p>
                     </div>
                 </div>
-                 <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400">
+                 <button className="p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-gray-700/50 text-gray-500 dark:text-gray-400">
                     <MoreHorizontal size={20} />
                 </button>
             </div>
@@ -106,25 +106,25 @@ const PostCard: React.FC<{ post: CommunityPost, isContinuationOfThread?: boolean
                 </div>
             </div>
 
-            <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex justify-around text-gray-600 dark:text-gray-300">
+            <div className="mt-2 pt-2 border-t border-gray-200/50 dark:border-gray-700/50 flex justify-around text-gray-600 dark:text-gray-300">
                 <button
                     onClick={handleLike}
-                    className={`flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-semibold ${isLiked ? 'text-blue-600 dark:text-blue-400' : ''}`}
+                    className={`flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors font-semibold ${isLiked ? 'text-blue-600 dark:text-blue-400' : ''}`}
                 >
                     <ThumbsUp size={20} className={isLiked ? 'fill-current' : ''} />
                     <span>Like</span>
                 </button>
-                <button className="flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-semibold">
+                <button className="flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors font-semibold">
                     <MessageCircle size={20} />
                     <span>Comment</span>
                 </button>
-                <button className="flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-semibold">
+                <button className="flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors font-semibold">
                     <Repeat2 size={20} />
                     <span>Quote</span>
                 </button>
                 <button 
                     onClick={handleBookmark}
-                    className={`flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-semibold ${isBookmarked ? 'text-purple-600 dark:text-purple-400' : ''}`}
+                    className={`flex-1 flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors font-semibold ${isBookmarked ? 'text-purple-600 dark:text-purple-400' : ''}`}
                 >
                     <Bookmark size={20} className={isBookmarked ? 'fill-current' : ''} />
                     <span>{isBookmarked ? 'Saved' : 'Save'}</span>

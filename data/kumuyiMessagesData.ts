@@ -1,6 +1,7 @@
-import { KumuyiMessage } from '../types';
+import { KumuyiMessage, MessageSeries, GCKScheduleItem, GCKTestimony } from '../types';
 
 export const kumuyiMessagesData: KumuyiMessage[] = [
+    // --- GCK Global ---
     {
         id: 'km-vid-1',
         type: 'video',
@@ -10,7 +11,7 @@ export const kumuyiMessagesData: KumuyiMessage[] = [
         date: '2023-10-22',
         duration: '58:14',
         views: '1.2M',
-        thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hq720.jpg',
+        thumbnailUrl: 'https://img.youtube.com/vi/uHgt8giw_sQ/maxresdefault.jpg',
         videoUrl: '',
         audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-1.mp3',
         description: 'This sermon explores the depths of faith as described in Matthew 17:20. True faith, even as small as a mustard seed, has the power to overcome insurmountable obstacles. We will delve into what it means to cultivate such faith through prayer, study of the Word, and complete trust in God\'s promises.',
@@ -25,11 +26,101 @@ export const kumuyiMessagesData: KumuyiMessage[] = [
         date: '2023-10-01',
         duration: '1:05:30',
         views: '980K',
-        thumbnailUrl: 'https://i.ytimg.com/vi/3tmd-ClpJxA/hq720.jpg',
+        thumbnailUrl: 'https://img.youtube.com/vi/3tmd-ClpJxA/maxresdefault.jpg',
         videoUrl: '',
         audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-2.mp3',
         description: 'Exploring the eternal nature of God\'s kingdom as described in the book of Hebrews. This message fortifies believers to stand firm in a world of constant change and upheaval, reminding us that we have received a kingdom that cannot be shaken.',
     },
+
+    // --- Monday Bible Study ---
+    {
+        id: 'km-mbs-1',
+        type: 'video',
+        title: 'The Beatitudes: Pathway to a Blessed Life',
+        series: 'Monday Bible Study',
+        speaker: 'W.F. Kumuyi',
+        date: '2023-11-06',
+        duration: '1:15:45',
+        views: '450K',
+        thumbnailUrl: 'https://img.youtube.com/vi/Gz2soJo6CUY/maxresdefault.jpg',
+        description: 'An in-depth study of Matthew 5:1-12, uncovering the profound spiritual truths behind the Beatitudes and how they form the foundation of Christian character.',
+        audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-1.mp3',
+    },
+     {
+        id: 'km-mbs-2',
+        type: 'video',
+        title: 'Understanding the Armour of God',
+        series: 'Monday Bible Study',
+        speaker: 'W.F. Kumuyi',
+        date: '2023-10-30',
+        duration: '1:20:10',
+        views: '510K',
+        thumbnailUrl: 'https://img.youtube.com/vi/YQHsXMglC9A/maxresdefault.jpg',
+        description: 'A systematic exposition of Ephesians 6:10-18, equipping believers with the spiritual weapons necessary for victory in spiritual warfare.',
+        audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-2.mp3',
+    },
+
+    // --- Thursday Revival Service ---
+    {
+        id: 'km-trs-1',
+        type: 'video',
+        title: 'The Fire of Revival',
+        series: 'Thursday Revival Service',
+        speaker: 'W.F. Kumuyi',
+        date: '2023-11-02',
+        duration: '1:10:20',
+        views: '600K',
+        thumbnailUrl: 'https://img.youtube.com/vi/SO_q_Lq5a2I/maxresdefault.jpg',
+        description: 'A passionate call for personal and corporate revival, examining the conditions that bring down the fire of God to purify, empower, and renew the church.',
+        audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-3.mp3',
+    },
+
+    // --- Sunday Worship Service ---
+     {
+        id: 'km-sws-1',
+        type: 'video',
+        title: 'Worship in Spirit and in Truth',
+        series: 'Sunday Worship Service',
+        speaker: 'W.F. Kumuyi',
+        date: '2023-11-05',
+        duration: '1:02:18',
+        views: '720K',
+        thumbnailUrl: 'https://img.youtube.com/vi/l60yK-i0p4o/maxresdefault.jpg',
+        description: 'Exploring the heart of true worship as taught by Jesus in John 4. This message goes beyond music and rituals to the attitude and sincerity of the worshipper\'s heart.',
+        audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-1.mp3',
+    },
+
+    // --- Impact Academy (Youth) ---
+    {
+        id: 'km-ia-1',
+        type: 'video',
+        title: 'A Youth on Fire for God',
+        series: 'Impact Academy',
+        speaker: 'W.F. Kumuyi',
+        date: '2023-10-28',
+        duration: '48:30',
+        views: '350K',
+        thumbnailUrl: 'https://img.youtube.com/vi/zZlJx_snT8s/maxresdefault.jpg',
+        description: 'A special message for the younger generation, challenging them to live with purpose, passion, and purity in a compromising world.',
+        audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-2.mp3',
+    },
+    
+    // --- Ministers Conference ---
+    {
+        id: 'km-mc-1',
+        type: 'video',
+        title: 'The Shepherd\'s Heart',
+        series: 'Ministers Conference',
+        speaker: 'W.F. Kumuyi',
+        date: '2023-09-15',
+        duration: '1:30:00',
+        views: '280K',
+        thumbnailUrl: 'https://img.youtube.com/vi/j5-yKhDd64s/maxresdefault.jpg',
+        description: 'A deep and challenging message for ministers and church leaders on cultivating the compassionate, caring, and protective heart of a true shepherd after God\'s own heart.',
+        audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-3.mp3',
+    },
+
+    // --- Other Messages ---
     {
         id: 'km-vid-3',
         type: 'video',
@@ -39,7 +130,7 @@ export const kumuyiMessagesData: KumuyiMessage[] = [
         date: '2023-10-15',
         duration: '45:22',
         views: '750K',
-        thumbnailUrl: 'https://i.ytimg.com/vi/uHgt8giw_sQ/hq720.jpg',
+        thumbnailUrl: 'https://img.youtube.com/vi/uHgt8giw_sQ/maxresdefault.jpg',
         videoUrl: '',
         audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-3.mp3',
         description: 'Based on the parable of the unforgiving servant in Matthew 18, this message highlights the critical importance of forgiveness in the life of a believer. Holding onto bitterness not only hinders our relationship with God but also brings torment upon ourselves.',
@@ -53,7 +144,7 @@ export const kumuyiMessagesData: KumuyiMessage[] = [
         date: '2023-09-24',
         duration: '55:10',
         views: '812K',
-        thumbnailUrl: 'https://i.ytimg.com/vi/Gz2soJo6CUY/hq720.jpg',
+        thumbnailUrl: 'https://img.youtube.com/vi/Gz2soJo6CUY/maxresdefault.jpg',
         videoUrl: '',
         audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-1.mp3',
         description: 'A deep dive into the doctrine of sanctification and holiness, explaining the possibility and provision for a life free from sin for every believer through the cleansing blood of Jesus Christ.',
@@ -67,7 +158,7 @@ export const kumuyiMessagesData: KumuyiMessage[] = [
         date: '2023-09-17',
         duration: '49:45',
         views: '690K',
-        thumbnailUrl: 'https://i.ytimg.com/vi/YQHsXMglC9A/hq720.jpg',
+        thumbnailUrl: 'https://img.youtube.com/vi/YQHsXMglC9A/maxresdefault.jpg',
         videoUrl: '',
         audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-2.mp3',
         description: 'This message examines the qualities God looks for in a true worshipper, going beyond music and rituals to the attitude of the heart. True worship must be in spirit and in truth.',
@@ -110,5 +201,40 @@ export const kumuyiMessagesData: KumuyiMessage[] = [
         thumbnailUrl: 'https://picsum.photos/seed/audio3/400/400',
         audioUrl: 'https://storage.googleapis.com/web-dev-assets/dclm-sermons/sermon-2.mp3',
         description: 'An essential guide for youth leaders and parents on how to effectively mentor and guide young people in their spiritual walk and relationship with God.',
+    }
+];
+
+// --- GCK Data (Integrated) ---
+
+export const mockGCKSchedule: GCKScheduleItem[] = [
+    { day: "Day 1", date: "Nov 23", time: "5:00 PM (GMT+1)", topic: "The King and His Kingdom" },
+    { day: "Day 2", date: "Nov 24", time: "5:00 PM (GMT+1)", topic: "Citizens of the Kingdom" },
+    { day: "Day 3", date: "Nov 25", time: "5:00 PM (GMT+1)", topic: "The Laws of the Kingdom" },
+    { day: "Day 4", date: "Nov 26", time: "8:00 AM (GMT+1)", topic: "Worship in the Kingdom" },
+    { day: "Day 5", date: "Nov 27", time: "5:00 PM (GMT+1)", topic: "The Expansion of the Kingdom" },
+    { day: "Day 6", date: "Nov 28", time: "5:00 PM (GMT+1)", topic: "The Consummation of the Kingdom" },
+];
+
+export const mockGCKTestimonies: GCKTestimony[] = [
+    {
+        id: 'gck-t1',
+        author: 'Grace A.',
+        location: 'Lagos, Nigeria',
+        testimony: "I had been suffering from severe migraines for over 5 years. During the prayer session on Day 2, Pastor Kumuyi prayed for the sick and I claimed my healing. Since that moment, I have not had a single headache. The pain is completely gone! Praise the Lord!",
+        avatar: "https://avatar.iran.liara.run/public/girl?username=grace"
+    },
+    {
+        id: 'gck-t2',
+        author: 'Samuel O.',
+        location: 'London, UK',
+        testimony: "My business was on the verge of collapse. I joined the GCK online and as the Word came forth on 'The Unshakeable Kingdom,' my faith was stirred. I prayed like never before. The following week, I received a call for a contract that has completely turned my business around. Our God is faithful!",
+        avatar: "https://avatar.iran.liara.run/public/boy?username=samuel"
+    },
+    {
+        id: 'gck-t3',
+        author: 'Patience M.',
+        location: 'Accra, Ghana',
+        testimony: "For years, there was strife and unforgiveness in my family. We barely spoke to each other. During the crusade, the message on forgiveness touched my heart. I called my siblings, and for the first time in a long time, we prayed together and forgave one another. The peace of God has been restored to our family.",
+        avatar: "https://avatar.iran.liara.run/public/girl?username=patience"
     }
 ];

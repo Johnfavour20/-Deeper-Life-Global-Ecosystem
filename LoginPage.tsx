@@ -32,12 +32,11 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen bg-primary-900">
             <Card className="w-full max-w-md">
                 <div className="text-center mb-8">
                     <Logo />
-                    <h2 className="text-2xl font-bold text-gray-800 mt-6">Welcome Back</h2>
-                    <p className="mt-2 text-gray-600">Sign in to the Global Ecosystem</p>
+                    <p className="mt-4 text-gray-600">Church Management System</p>
                 </div>
                 <form onSubmit={handleLogin} className="space-y-4">
                     <div>

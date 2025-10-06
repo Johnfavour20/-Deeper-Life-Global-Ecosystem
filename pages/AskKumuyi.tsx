@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, BookOpen, Lightbulb, ClipboardList } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { askKumuyi } from '../services/geminiService';
+import { askKumuyi, generateSermonOutline, findIllustrations, suggestScriptures } from '../services/geminiService';
+import Button from '../components/ui/Button';
 
 interface Message {
     id: number;
@@ -14,7 +15,7 @@ interface KumuyiChatTurn {
     parts: { text: string }[];
 }
 
-const AskKumuyi: React.FC = () => {
+const QandAView: React.FC = () => {
     const { userProfile } = useAuth();
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -136,6 +137,90 @@ const AskKumuyi: React.FC = () => {
                     </button>
                 </form>
             </footer>
+        </div>
+    );
+};
+
+const SermonPrepView: React.FC = () => {
+    const [topic, setTopic] = useState('');
+    const [results, setResults] = useState<{ outline: string; illustrations: string; scriptures: string }>({ outline: '', illustrations: '', scriptures: '' });
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleGenerate = async () => {
+        if (!topic.trim()) return;
+        setIsLoading(true);
+        setResults({ outline: '', illustrations: '', scriptures: '' });
+        
+        const [outline, illustrations, scriptures] = await Promise.all([
+            generateSermonOutline(topic),
+            findIllustrations(topic),
+            suggestScriptures(topic)
+        ]);
+
+        setResults({ outline, illustrations, scriptures });
+        setIsLoading(false);
+    };
+    
+    const ResultCard: React.FC<{ title: string; icon: React.ElementType; content: string }> = ({ title, icon: Icon, content }) => (
+        <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+            <h3 className="font-bold text-lg flex items-center gap-2 mb-2 text-blue-700 dark:text-blue-300"><Icon size={20} /> {title}</h3>
+            <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />').replace(/\*\*/g, '') }} />
+        </div>
+    );
+
+    return (
+        <div className="flex flex-col h-full bg-transparent overflow-hidden">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                <label htmlFor="sermon-topic" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sermon Topic</label>
+                <div className="flex gap-2">
+                    <input
+                        id="sermon-topic"
+                        type="text"
+                        value={topic}
+                        onChange={(e) => setTopic(e.target.value)}
+                        placeholder="e.g., The Power of a Consecrated Life"
+                        className="flex-1 w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <Button onClick={handleGenerate} disabled={isLoading || !topic.trim()}>
+                        {isLoading ? 'Generating...' : 'Generate'}
+                    </Button>
+                </div>
+            </div>
+            <main className="flex-1 overflow-y-auto p-4 space-y-4">
+                 {isLoading ? (
+                    <div className="flex items-center justify-center h-full">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-700"></div>
+                    </div>
+                 ) : (
+                    <>
+                        {results.outline && <ResultCard title="Sermon Outline" icon={ClipboardList} content={results.outline} />}
+                        {results.illustrations && <ResultCard title="Illustrations" icon={Lightbulb} content={results.illustrations} />}
+                        {results.scriptures && <ResultCard title="Cross-references" icon={BookOpen} content={results.scriptures} />}
+                        {!results.outline && !results.illustrations && !results.scriptures && (
+                            <div className="text-center text-gray-500 pt-16">
+                                <p>Enter a topic above to generate sermon preparation materials.</p>
+                            </div>
+                        )}
+                    </>
+                 )}
+            </main>
+        </div>
+    );
+};
+
+
+const AskKumuyi: React.FC = () => {
+    const [activeTab, setActiveTab] = useState<'qa' | 'sermon_prep'>('qa');
+    
+    return (
+        <div className="flex flex-col h-full bg-transparent overflow-hidden">
+            <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex">
+                    <button onClick={() => setActiveTab('qa')} className={`flex-1 p-3 text-sm font-semibold text-center ${activeTab === 'qa' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}>Q&A with Pastor Kumuyi</button>
+                    <button onClick={() => setActiveTab('sermon_prep')} className={`flex-1 p-3 text-sm font-semibold text-center ${activeTab === 'sermon_prep' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}>Sermon Prep</button>
+                </div>
+            </div>
+            {activeTab === 'qa' ? <QandAView /> : <SermonPrepView />}
         </div>
     );
 };
